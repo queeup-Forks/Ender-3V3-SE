@@ -1,0 +1,28 @@
+name: Build firmware
+on:
+  push:
+    tags:
+      - '*.*.*'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup PlatformIO
+        uses: n-vr/setup-platformio-action@v1
+    #   - uses: actions/setup-python@v5
+    #     with:
+    #       python-version: '3.11'
+    #   - name: Install PlatformIO Core
+    #     run: pip install --upgrade platformio
+      - name: Build PlatformIO project
+        run: pio run
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ender-3V3-SE_firmware
+          path: .pio/build/STM32F103RET6_creality/firmware.bin
+          overwrite: true
+          if-no-files-found: error
